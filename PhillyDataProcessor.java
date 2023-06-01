@@ -21,7 +21,7 @@ public class PhillyDataProcessor {
 			properties.add(p);
 		}
 		
-		populationReader = new PopulationReader(file1);
+		populationReader = new PopulationReader(file2);
 		populationMap = populationReader.readPopulation();
 		
 	}
@@ -39,16 +39,22 @@ public class PhillyDataProcessor {
 		if (properties == null) {
 			throw new IllegalStateException();
 		}
+		if (populationMap == null) {
+			throw new IllegalStateException();
+		}
 		
 		double total = 0;
 		
 		for (Property p : properties) {
-			if (p.zipCode != null && p.zipCode.length() >= 5 && p.zipCode == zip) {
-				
+			if (p.zipCode != null && p.zipCode.length() >= 5 && p.zipCode.substring(0, 5).equals(zip)) {
 				if (p.value != null && p.value.isBlank() == false) {
-					double value = Double.parseDouble(p.value);
-					if (value > 0) {
-						total += value;
+					try {
+						double value = Double.parseDouble(p.value);
+						if (value > 0) {
+							total += value;
+						}
+					} catch (NumberFormatException e) {
+
 					}
 				} 
 
@@ -57,6 +63,9 @@ public class PhillyDataProcessor {
 		}
 
 		Integer population = populationMap.get(zip);
+		if (population == null || population == 0) {
+			return 0.0;
+		}
 	
 		return total / population;
 		

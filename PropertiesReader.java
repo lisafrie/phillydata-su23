@@ -41,15 +41,39 @@ public class PropertiesReader {
 				
 			}
 			
+			if (zipCodeIndex == -1) {
+				throw new IllegalStateException("zip_code header missing");
+			}
+			if (areaIndex == -1) {
+				throw new IllegalStateException("area header missing");
+			}
+			if (valueIndex == -1) {
+				throw new IllegalStateException("value header missing");
+			}
 			
 			while (in.hasNext()) {
 				String line = in.nextLine();
 				tok = line.split(",");
-				
+								
 				Property p = new Property();
-				p.zipCode = tok[zipCodeIndex];
-				p.area = tok[areaIndex];
-				p.value = tok[valueIndex];
+				
+				if (tok.length > zipCodeIndex) {
+					p.zipCode = tok[zipCodeIndex];
+				} else {
+					continue;
+				}
+				
+				if (tok.length > areaIndex) {
+					p.area = tok[areaIndex];
+				} else {
+					continue;
+				}
+				
+				if (tok.length > valueIndex) {
+					p.value = tok[valueIndex];
+				} else {
+					continue;
+				}
 				
 				properties.add(p);		
 				
@@ -58,6 +82,7 @@ public class PropertiesReader {
 			
 		}
 		catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
 		
 		return properties;

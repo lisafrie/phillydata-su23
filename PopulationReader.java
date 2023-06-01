@@ -22,9 +22,16 @@ public class PopulationReader {
 			while (in.hasNext()) {
 				String line = in.nextLine();
 				String[] tok = line.split(" ");
-				String zip = tok[0];
-				int population = Integer.parseInt(tok[1]);
-				map.put(zip, population);
+				if (tok.length < 2) {
+					continue;
+				}
+				try {
+					Integer.parseInt(tok[0]);
+					String zip = tok[0];
+					int population = Integer.parseInt(tok[1]);
+					map.put(zip, population);
+				} catch (NumberFormatException e) {
+				}
 			}
 		}
 		catch (Exception e) {
